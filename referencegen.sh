@@ -30,23 +30,29 @@ author () {
         secondauthorcomplete=$(echo "${secondauthorsurname}, ${secondauthorforename:0:1}.")
         echo "$secondauthorcomplete" # This command is here for now to test
 
+        if [[ "$noofauthor" -gt "2" ]]; then
         thirdauthorfullname=$(echo "$author" | cut -d ',' -f 3)
         thirdauthorforename=$(echo "$thirdauthorfullname" | cut -d ' ' -f 1)
         thirdauthorsurname=$(echo "$thirdauthorfullname" | cut -d ' ' -f 2)
         thirdauthorcomplete=$(echo "${thirdauthorsurname}, ${thirdauthorforename:0:1}.")
         echo "$thirdauthorcomplete" # This command is here for now to test
+        fi
 
+        if [[ "$noofauthor" -gt "3" ]]; then
         fourthauthorfullname=$(echo "$author" | cut -d ',' -f 4)
         fourthauthorforename=$(echo "$fourthauthorfullname" | cut -d ' ' -f 1)
         fourthauthorsurname=$(echo "$fourthauthorfullname" | cut -d ' ' -f 2)
         fourthauthorcomplete=$(echo "${fourthauthorsurname}, ${fourthauthorforename:0:1}.")
         echo "$fourthauthorcomplete" # This command is here for now to test
+        fi
 
+        if [[ "$noofauthor" -gt "4" ]]; then
         fifthauthorfullname=$(echo "$author" | cut -d ',' -f 5)
         fifthauthorforename=$(echo "$fifthauthorfullname" | cut -d ' ' -f 1)
         fifthauthorsurname=$(echo "$fifthauthorfullname" | cut -d ' ' -f 2)
         fifthauthorcomplete=$(echo "${fifthauthorsurname}, ${fifthauthorforename:0:1}.")
         echo "$fifthauthorcomplete" # This command is here for now to test
+        fi
     fi
 }
 
