@@ -1,19 +1,95 @@
-echo -e "What format is the source you are referencing from?"
+env -i bash # Clear any previous bash made variables
+echo -e "\nWelcome to YourReferenceGenerator (YRG)\n"
+
+author () {
+    read -p "How many authors are there? " noofauthor
+
+    if [[ "$noofauthor" -eq "1" ]]; then
+    echo -e "What is the authors fullname? (e.g. Forename Surname - \e[3mForename can be a letter\e[0m) "
+    read author
+    forename=$(echo "$author" | cut -d ' ' -f 1)
+    surname=$(echo "$author" | cut -d ' ' -f 2)
+    authorcomplete=$(echo "${surname}, ${forename:0:1}.")
+    echo "$authorcomplete" # This command is here for now to test
+    fi
+
+    if [[ "$noofauthor" -gt "1" ]]; then
+        echo -e "\nList all author names, using a comma to separate (e.g. Forename Surname, Forename Surname, Forname Surname ... - \e[3mMaximum of 5\e[0m): "
+        read author
+        author=$(echo "$author" | sed 's/, /,/g') # Can only use one character as delimiter; comma is desired
+
+        firstauthorfullname=$(echo "$author" | cut -d ',' -f 1)
+        firstauthorforename=$(echo "$firstauthorfullname" | cut -d ' ' -f 1)
+        firstauthorsurname=$(echo "$firstauthorfullname" | cut -d ' ' -f 2)
+        firstauthorcomplete=$(echo "${firstauthorsurname}, ${firstauthorforename:0:1}.")
+        echo -e "\n$firstauthorcomplete" # This command is here for now to test
+
+        secondauthorfullname=$(echo "$author" | cut -d ',' -f 2)
+        secondauthorforename=$(echo "$secondauthorfullname" | cut -d ' ' -f 1)
+        secondauthorsurname=$(echo "$secondauthorfullname" | cut -d ' ' -f 2)
+        secondauthorcomplete=$(echo "${secondauthorsurname}, ${secondauthorforename:0:1}.")
+        echo "$secondauthorcomplete" # This command is here for now to test
+
+        thirdauthorfullname=$(echo "$author" | cut -d ',' -f 3)
+        thirdauthorforename=$(echo "$thirdauthorfullname" | cut -d ' ' -f 1)
+        thirdauthorsurname=$(echo "$thirdauthorfullname" | cut -d ' ' -f 2)
+        thirdauthorcomplete=$(echo "${thirdauthorsurname}, ${thirdauthorforename:0:1}.")
+        echo "$thirdauthorcomplete" # This command is here for now to test
+
+        fourthauthorfullname=$(echo "$author" | cut -d ',' -f 4)
+        fourthauthorforename=$(echo "$fourthauthorfullname" | cut -d ' ' -f 1)
+        fourthauthorsurname=$(echo "$fourthauthorfullname" | cut -d ' ' -f 2)
+        fourthauthorcomplete=$(echo "${fourthauthorsurname}, ${fourthauthorforename:0:1}.")
+        echo "$fourthauthorcomplete" # This command is here for now to test
+
+        fifthauthorfullname=$(echo "$author" | cut -d ',' -f 5)
+        fifthauthorforename=$(echo "$fifthauthorfullname" | cut -d ' ' -f 1)
+        fifthauthorsurname=$(echo "$fifthauthorfullname" | cut -d ' ' -f 2)
+        fifthauthorcomplete=$(echo "${fifthauthorsurname}, ${fifthauthorforename:0:1}.")
+        echo "$fifthauthorcomplete" # This command is here for now to test
+    fi
+}
+
+publishdate () {
+    read -p "What is the published date of the source? (e.g. 12th March, 2017): " pub
+
+    pub=$(echo "$pub" | sed 's/, /,/g') # Can only use one character as delimiter; comma is desired
+    pubyear=$(echo "$pub" | cut -d ',' -f 2 )
+    pubdate=$(echo "$pub" | cut -d ',' -f 1 )
+    echo "$pubyear" # This command is here for now to test
+    echo "$pubdate" # This command is here for now to test
+}
+
+echo -e "What format is the source you are referencing?"
 PS3='Please enter your number choice (1/2/3/4): '
-options=("(Online) Newspaper" "Website (General)" "Journal" "Quit")
+options=("(Online) Newspaper" "Website (General)" "Journal" "Quit") # Options to be slowly expanded
 select opt in "${options[@]}"
 do
     case $opt in
         "(Online) Newspaper")
-            format="onlinenewspaper"
+            echo -e "\nYou chose '$opt'"
+            echo -e "\nWe will now build to this style:"
+            echo "Author’s surname, Initial. (Year of publication) ‘Title of article.’ Name of newspaper (in"
+            echo -e "italics). [Online] Date of publication. [Date accessed] URL\n"
+
+            author
+            publishdate
 	    break
             ;;
         "Website (General)")
-            format="website"
+            echo -e "\nYou chose '$opt'"
+            echo -e "\nWe will now build to this style:"
+            
+            author
+            publishdate
 	    break
             ;;
         "Journal")
-            format="journal"
+            echo -e "\nYou chose '$opt'"
+            echo -e "\nWe will now build to this style:"
+
+            author
+            publishdate
 	    break
             ;;
         "Quit")
@@ -22,11 +98,3 @@ do
         *) echo "You did not choose one of the options: '$REPLY'";;
     esac
 done
-echo -e "\nYou chose '$opt'"
-if [ "$format" = "onlinenewspaper" ]; then
-    read -p "What is the authors fullname? " firstauthor
-    forename=$(echo "$firstauthor" | cut -d ' ' -f 1)
-    surname=$(echo "$firstauthor" | cut -d ' ' -f 2)
-    echo -e "\n${surname}, ${forename:0:1}."
-fi
-
