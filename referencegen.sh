@@ -1,11 +1,10 @@
-
 author () {
     unset noofauthor
 
     while [[ ! $noofauthor =~ ^(1|2|3|4|5)$ ]]
     do
     echo -e "How many authors are there? - \e[3mMaximum of 5\e[0m:"
-    read noofauthor
+    read -n 2 -r noofauthor
     if [[ ! $noofauthor =~ ^(1|2|3|4|5)$ ]]; then
         echo -e "\nYou did not input a number or a number within the range: '$noofauthor'. Try again.\n"
     fi
@@ -101,6 +100,32 @@ author () {
 date=$(echo $(date '+%dth %B %Y'))
 dateaccessed=$(echo "[Accessed on $date]")
 
+generateanother () {
+	unset rebash
+	
+	while [[ ! $rebash =~ ^(Y|y|N|n)$ ]]
+	do
+		read -p "Would you like to generate another reference? (y/n) " -n 2 -r rebash
+	
+		if [[ $rebash =~ ^[Nn]$ ]]; then
+			echo ""
+			echo "Thank you for using the generator. Good luck with your assignment!"
+			return 1
+		fi
+
+		if [[ $rebash =~ ^[Yy]$ ]]; then
+			echo "Alrighty, ready for the next reference"
+			options
+		fi
+
+		if [[ ! $rebash =~ ^[Yy|Nn]$ ]]; then
+			echo ""
+			echo "You did not input 'y'/'Y' or 'n'/'N'! Try again."
+			echo ""
+		fi
+	done
+}
+
 namenewsmag () {
     echo
     read -p "What is the name of the Newspaper/Magazine? (e.g. The Guardian  or  Financial Times): " namenewsmag
@@ -136,46 +161,54 @@ url () {
 
 clear # Clear screen, immerse the generator
 
-echo -e "\nWelcome to YourReferenceGenerator (YRG)\n"
-echo -e "What format is the source you are referencing?"
-PS3='Please enter your number choice (1/2/3/4): '
-options=("(Online) Newspaper" "Website (General)" "Journal" "Quit") # Options to be slowly expanded
-select opt in "${options[@]}"
-do
-    case $opt in
-        "(Online) Newspaper")
-            echo -e "\nYou chose '$opt'"
-            echo -e "\n"$opt" reference format:"
-            echo -e "Author’s surname, Initial. (Year of publication) ‘Title of article.’ \e[3mName of newspaper (in\e[0m"
-            echo -e "\e[3mitalics)\e[0m. [Online] Date of publication. [Date accessed] URL\n"
+options () {
+	echo -e "\nWelcome to YourReferenceGenerator (YRG)\n"
+	echo -e "What format is the source you are referencing?"
+	PS3='Please enter your number choice (1/2/3/4): '
+	options=("(Online) Newspaper" "Website (General)" "Journal" "Quit") # Options to be slowly expanded
+	select opt in "${options[@]}"
+	do
+	    case $opt in
+	        "(Online) Newspaper")
+	            echo -e "\nYou chose '$opt'"
+	            echo -e "\n"$opt" reference format:"
+	            echo -e "Author’s surname, Initial. (Year of publication) ‘Title of article.’ \e[3mName of newspaper (in\e[0m"
+	            echo -e "\e[3mitalics)\e[0m. [Online] Date of publication. [Date accessed] URL\n"
 
-            author
-            namenewsmag
-            publishdate
-            quotedtitle
-            url
-            echo -e "\nReference Generated:\n$authorcomplete $pubyear $quotedtitle $namenewsmag [Online] $pubdate $dateaccessed $url"
-	    break
-            ;;
-        "Website (General)")
-            echo -e "\nYou chose '$opt'"
-            echo -e "\nWe will now build to this style:"
+	            author
+	            namenewsmag
+	            publishdate
+	            quotedtitle
+	            url
+	            echo -e "\nReference Generated:\n$authorcomplete $pubyear $quotedtitle $namenewsmag [Online] $pubdate $dateaccessed $url"
+	            generateanother
+			    break
+	            ;;
+
+	        "Website (General)")
+	            echo -e "\nYou chose '$opt'"
+	            echo -e "\nWe will now build to this style:"
             
-            author
-            publishdate
-	    break
-            ;;
-        "Journal")
-            echo -e "\nYou chose '$opt'"
-            echo -e "\nWe will now build to this style:"
+	            author
+	            publishdate
+	            generateanother
+			    break
+    	        ;;
+	        "Journal")
+	            echo -e "\nYou chose '$opt'"
+	            echo -e "\nWe will now build to this style:"
 
-            author
-            publishdate
-	    break
-            ;;
-        "Quit")
-        break
-            ;;
-        *) echo "You did not choose one of the options: '$REPLY'";;
-    esac
-done
+	            author
+	            publishdate
+	            generateanother
+			    break
+    	        ;;
+    	    "Quit")
+		        break
+    	        ;;
+   		   	*) echo "You did not choose one of the options: '$REPLY'";;
+    	esac
+	done
+}
+
+options
