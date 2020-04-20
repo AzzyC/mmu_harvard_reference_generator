@@ -102,24 +102,24 @@ date=$(echo $(date '+%dth %B %Y'))
 dateaccessed=$(echo "[Accessed on $date]")
 
 generateanother () {
-	unset rebash
+	unset generateanother
 	
-	while [[ ! $rebash =~ ^(Y|y|N|n)$ ]]
+	while [[ ! $generateanother =~ ^(Y|y|N|n)$ ]]
 	do
-		read -p "Would you like to generate another reference? (y/n) " -n 2 -r rebash
+		read -p "Would you like to generate another reference? (y/n) " -n 2 -r generateanother
 	
-		if [[ $rebash =~ ^[Nn]$ ]]; then
+		if [[ $generateanother =~ ^[Nn]$ ]]; then
 			echo ""
 			echo "Thank you for using the generator. Good luck with your assignment!"
 			return 1
 		fi
 
-		if [[ $rebash =~ ^[Yy]$ ]]; then
+		if [[ $generateanother =~ ^[Yy]$ ]]; then
 			echo "Alrighty, ready for the next reference"
 			options
 		fi
 
-		if [[ ! $rebash =~ ^[Yy|Nn]$ ]]; then
+		if [[ ! $generateanother =~ ^[Yy|Nn]$ ]]; then
 			echo ""
 			echo "You did not input 'y'/'Y' or 'n'/'N'! Try again."
 			echo ""
@@ -136,16 +136,20 @@ namenewsmag () {
 
 publishdate () {
 	echo
-	read -p "What is the published date of the source? (e.g. 12th March, 2017): " pub
 
-	pub=$(echo "$pub" | sed 's/, /,/g') # Can only use one character as delimiter; comma is desired
-	pubyear=$(echo "$pub" | cut -d ',' -f 2 )
-	pubdate=$(echo "$pub" | cut -d ',' -f 1 )
+	read -p "What is the published date of the source? (e.g. 12th March 2017): " pub
+	pub=( $pub )
+	
+	pubdate=$(echo "${pub[0]} ${pub[1]}")
+	pubyear=$(echo "${pub[2]}")
 
-	pubyear=$(echo "($pubyear)")
-	pubdate=$(echo "$pubdate".)
-	echo "$pubyear" # This command is here for now to test
+	itpubyear=$(echo "$pubyear") # "I"n-"T"ext citation does not use brackets around the Publication year
+	refpubyear=$(echo "($pubyear)") # Reference Publication year
+	pubdate=$(echo "$pubdate".) # The Publication date will only be used in the references section, which includes a '.' after it
+
+	echo "$itpubyear" # This command is here for now to test
 	echo "$pubdate" # This command is here for now to test
+	echo "$refpubyear" # This command is here for now to test
 }
 
 quotedtitle () {
