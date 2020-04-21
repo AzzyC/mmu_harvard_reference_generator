@@ -1,31 +1,46 @@
+# ANSI Escape Codes
+bold='\e[1m' # Turn subsequent string to .. bold font
+italic='\e[3m' # .. italic font 
+red='\e[1m\e[31m' # .. red
+green='\e[32m' # .. green
+yellow='\e[33m' # .. yellow
+purple='\e[35m' # .. purple
+cyan='\e[36m' # .. cyan
+grey='\e[37m' # .. grey
+reset='\e[0m' # Reset subsequent string back to normal font
+
 author () {
 	unset noofauthor
+	echo
 
 	while [[ ! $noofauthor =~ ^(1|2|3|4|5)$ ]]
 	do
-		echo -e "How many authors are there? - \e[3mMaximum of 5\e[0m:"
-		read -n 2 -r noofauthor
+		read -p "How many authors are there? - Maximum of 5: " -n 2 -r noofauthor
 
 		if [[ ! $noofauthor =~ ^(1|2|3|4|5)$ ]]; then
-			echo -e "\nYou did not input a number or a number within the range: '$noofauthor'. Try again.\n"
+			echo
+			echo -e ""$red"You did not input a number, a number within the range or pressing backspace instead: '$noofauthor'"$reset""
 		fi
 	done
 
+	echo
+	echo -e ""$bold""$cyan"Forename may be a single letter"$reset"" 
+
 	if [[ "$noofauthor" -eq "1" ]]; then
-		echo -e "\nWhat is the authors fullname? (e.g. Forename Surname - \e[3mForename can be a letter\e[0m)"
-		read author
+		read -p "What is the authors fullname? (e.g. Forename Surname): " author
 
 		forename=$(echo "$author" | cut -d ' ' -f 1)
 		surname=$(echo "$author" | cut -d ' ' -f 2)
 
 		authorcomplete=$(echo "${surname}, ${forename:0:1}.")
+		echo
 		echo "$authorcomplete" # This command is here for now to test
 	fi
 
 	if [[ "$noofauthor" -eq "2" ]]; then
-		echo
 		read -p "Provide both author names, using a comma to separate (e.g. Forename Surname, Forename Surname): " author
 		author=$(echo "$author" | sed 's/, /,/g') # Can only use one character as delimiter; comma is desired
+		echo
 
 		firstauthorfullname=$(echo "$author" | cut -d ',' -f 1)
 		firstauthorforename=$(echo "$firstauthorfullname" | cut -d ' ' -f 1)
@@ -43,8 +58,7 @@ author () {
 	fi
 
 	if [[ "$noofauthor" -ge "3" ]]; then
-		echo -e "\nList all $noofauthor author names, using a comma to separate (e.g. Forename Surname, Forename Surname, Forname Surname ... : "
-		read author
+		read -p "List all $noofauthor author names, using a comma to separate (e.g. Forename Surname, Forename Surname, Forname Surname ...): " author
 		author=$(echo "$author" | sed 's/, /,/g') # Can only use one character as delimiter; comma is desired
 
 		firstauthorfullname=$(echo "$author" | cut -d ',' -f 1)
@@ -59,15 +73,13 @@ author () {
 		secondauthorcomplete=$(echo "${secondauthorsurname}, ${secondauthorforename:0:1}.")
 		echo "$secondauthorcomplete" # This command is here for now to test
 
-		if [[ "$noofauthor" -eq "3" ]]; then
-			thirdauthorfullname=$(echo "$author" | cut -d ',' -f 3)
-			thirdauthorforename=$(echo "$thirdauthorfullname" | cut -d ' ' -f 1)
-			thirdauthorsurname=$(echo "$thirdauthorfullname" | cut -d ' ' -f 2)
-			thirdauthorcomplete=$(echo "${thirdauthorsurname}, ${thirdauthorforename:0:1}.")
-			echo "$thirdauthorcomplete" # This command is here for now to test
-		fi
+		thirdauthorfullname=$(echo "$author" | cut -d ',' -f 3)
+		thirdauthorforename=$(echo "$thirdauthorfullname" | cut -d ' ' -f 1)
+		thirdauthorsurname=$(echo "$thirdauthorfullname" | cut -d ' ' -f 2)
+		thirdauthorcomplete=$(echo "${thirdauthorsurname}, ${thirdauthorforename:0:1}.")
+		echo "$thirdauthorcomplete" # This command is here for now to test
 
-		if [[ "$noofauthor" -eq "4" ]]; then
+		if [[ "$noofauthor" -ge "4" ]]; then
 			fourthauthorfullname=$(echo "$author" | cut -d ',' -f 4)
 			fourthauthorforename=$(echo "$fourthauthorfullname" | cut -d ' ' -f 1)
 			fourthauthorsurname=$(echo "$fourthauthorfullname" | cut -d ' ' -f 2)
@@ -75,7 +87,7 @@ author () {
 			echo "$fourthauthorcomplete" # This command is here for now to test
 		fi
 
-		if [[ "$noofauthor" -eq "5" ]]; then
+		if [[ "$noofauthor" -ge "5" ]]; then
 			fifthauthorfullname=$(echo "$author" | cut -d ',' -f 5)
 			fifthauthorforename=$(echo "$fifthauthorfullname" | cut -d ' ' -f 1)
 			fifthauthorsurname=$(echo "$fifthauthorfullname" | cut -d ' ' -f 2)
@@ -98,19 +110,20 @@ author () {
 
 }
 
-date=$(echo $(date '+%dth %B %Y'))
+date=$(echo $(date '+%d %B %Y'))
 dateaccessed=$(echo "[Accessed on $date]")
 
 generateanother () {
 	unset generateanother
+	echo
 	
 	while [[ ! $generateanother =~ ^(Y|y|N|n)$ ]]
 	do
 		read -p "Would you like to generate another reference? (y/n) " -n 2 -r generateanother
 	
 		if [[ $generateanother =~ ^[Nn]$ ]]; then
-			echo ""
-			echo "Thank you for using the generator. Good luck with your assignment!"
+			echo
+			echo -e ""$green"Thank you for using YRG. Good luck with your assignment! ;]"$reset""
 			return 1
 		fi
 
@@ -120,9 +133,9 @@ generateanother () {
 		fi
 
 		if [[ ! $generateanother =~ ^[Yy|Nn]$ ]]; then
-			echo ""
-			echo "You did not input 'y'/'Y' or 'n'/'N'! Try again."
-			echo ""
+			echo
+			echo -e ""$red"You did not input 'y'/'Y' or 'n'/'N': "$generateanother"."$reset""
+			echo
 		fi
 	done
 }
@@ -130,7 +143,8 @@ generateanother () {
 namenewsmag () {
 	echo
 	read -p "What is the name of the Newspaper/Magazine? (e.g. The Guardian  or  Financial Times): " namenewsmag
-	namenewsmag=$(echo -e "\e[3m$namenewsmag\e[0m.")
+	namenewsmag=$(echo -e ""$italic"$namenewsmag"$reset".")
+	echo
 	echo "$namenewsmag" # This command is here for now to test
 }
 
@@ -147,9 +161,8 @@ publishdate () {
 	refpubyear=$(echo "($pubyear)") # Reference Publication year
 	pubdate=$(echo "$pubdate".) # The Publication date will only be used in the references section, which includes a '.' after it
 
-	echo "$itpubyear" # This command is here for now to test
-	echo "$pubdate" # This command is here for now to test
-	echo "$refpubyear" # This command is here for now to test
+	echo
+	echo "$itpubyear $pubdate $refpubyear " # This command is here for now to test
 }
 
 quotedtitle () {
@@ -165,31 +178,39 @@ url () {
 }
 
 options () {
+	echo
 	echo -e "What format is the source you are referencing?"
+	echo
 	PS3='Please enter your number choice (1/2/3/4): '
 	options=("(Online) Newspaper" "Website (General)" "Journal" "Quit") # Options to be slowly expanded
 	select opt in "${options[@]}"
 	do
 		case $opt in
+
 			"(Online) Newspaper")
-				echo -e "\nYou chose '$opt'"
-				echo -e "\n"$opt" reference format:"
-				echo -e "Author’s surname, Initial. (Year of publication) ‘Title of article.’ \e[3mName of newspaper (in\e[0m"
-				echo -e "\e[3mitalics)\e[0m. [Online] Date of publication. [Date accessed] URL\n"
+				echo
+				echo "You chose '$opt'"
+				echo
+				echo ""$opt" reference layout:"
+				echo -e "Author surname, Initial. (Year of publication) ‘Title of article.’ "$italic"Name of newspaper"$reset". [Online] Date of publication. [Date accessed] URL"
 
 				author
 				namenewsmag
 				publishdate
 				quotedtitle
 				url
-				echo -e "\nReference Generated:\n$authorcomplete $pubyear $quotedtitle $namenewsmag [Online] $pubdate $dateaccessed $url"
+
+				echo
+				echo -e ""$green"Reference Generated:"$reset""
+				echo -e "$authorcomplete $refpubyear $quotedtitle $namenewsmag [Online] $pubdate $dateaccessed $url"
 				generateanother
 				break
 				;;
 
 			"Website (General)")
-				echo -e "\nYou chose '$opt'"
-				echo -e "\nWe will now build to this style:"
+				echo "You chose '$opt'"
+				echo
+				echo ""$opt" reference layout:"
 
 				author
 				publishdate
@@ -197,8 +218,9 @@ options () {
 				break
 				;;
 			"Journal")
-				echo -e "\nYou chose '$opt'"
-				echo -e "\nWe will now build to this style:"
+				echo "You chose '$opt'"
+				echo
+				echo ""$opt" reference layout:"
 
 				author
 				publishdate
@@ -210,12 +232,21 @@ options () {
 				break
 				;;
 			*)
-				echo "You did not choose one of the options: '$REPLY'";;
+				echo
+				echo ""$red"You did not choose one of the options: '$REPLY'. Try again:"$reset""
+				echo
+				;;
+
 		esac
 	done
 }
 
 clear # Clear screen, immerse the generator
-echo -e "\nWelcome to YourReferenceGenerator (YRG)\n"
+
+echo "   -------------------------------------------   "
+echo " / /‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ \ "
+echo -e " | | "$cyan"Welcome "$bold""$red"to"$reset" "$green"Your"$yellow"Reference"$grey"Generator "$purple"(YRG)"$reset" | | "
+echo " \ \_________________________________________/ / "
+echo "   -------------------------------------------   "
 
 options
