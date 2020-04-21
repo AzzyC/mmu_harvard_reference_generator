@@ -1,16 +1,16 @@
 # ANSI Escape Codes
-bold='\e[1m' # Turn subsequent string to .. bold font
-italic='\e[3m' # .. italic font 
-red='\e[1m\e[31m' # .. red
-green='\e[32m' # .. green
-yellow='\e[33m' # .. yellow
-purple='\e[35m' # .. purple
-cyan='\e[36m' # .. cyan
-grey='\e[37m' # .. grey
-reset='\e[0m' # Reset subsequent string back to normal font
+bold="\e[1m" 
+italic="\e[3m"
+red="\e[1;31m"
+green="\e[1;32m"
+yellow="\e[1;33m"
+dblue="\e[0;34m" # Dark
+lblue="\e[1;34m" # Light
+purple="\e[1;35m"
+cyan="\e[1;36m"
+reset="\e[0m" # Reset subsequent string back to normal font
 
-author () {
-	unset noofauthor
+authorfunc () {
 	echo
 
 	while [[ ! $noofauthor =~ ^(1|2|3|4|5)$ ]]
@@ -20,116 +20,134 @@ author () {
 		if [[ ! $noofauthor =~ ^(1|2|3|4|5)$ ]]; then
 			echo
 			echo -e ""$red"You did not input a number, a number within the range or pressing backspace instead: '$noofauthor'"$reset""
+			echo
+		fi
+	done
+ 
+	while [[ "${#author[@]}" -ne "$((noofauthor*2))" ]]; do
+		
+		if [[ "$noofauthor" -eq "1" ]]; then
+			echo
+			read -p "What is the authors fullname? (e.g. Forename Surname): " author
+			author=( $author )
+
+			if [[ "${#author[@]}" -eq "2" ]]; then
+				echo
+
+				forename=$(echo "${author[0]}")
+				surname=$(echo "${author[1]}")
+
+				authorcomplete=$(echo "${surname}, ${forename:0:1}.")
+			else
+				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
+			fi
+		fi
+
+		if [[ "$noofauthor" -ge "2" ]]; then
+			echo
+			echo -e ""$purple"Authors names should be inputted in "$reset""$bold"Forename Surname"$reset" "$purple"order - Forname may be a single letter"$reset""
+			echo -e ""$cyan"Supported formats: "$yellow"'Author1, Author2, ..'"$reset" or "$green"'Author1 & Author2 & ..'"$reset" or "$red"'Author1 and Author2 and ..'"$reset" or "$purple"'Author1 Author2'"$reset" or "$dblue"'Author1 Author2'"$reset" or a "$bold"mix of the 4"$reset", e.g. "$lblue"'Author1, Author2 and ..'"$reset""
+		fi				
+
+		if [[ "$noofauthor" -eq "2" ]]; then
+			read -p "Provide both authors names, in any of the supported formats: " author
+			author=$(echo "$author" | sed 's/,//g;s/ & / /g;s/ and / /g') # Can only use one character as delimiter; comma is desired
+			author=( $author )
+
+			if [[ "${#author[@]}" -eq "4" ]]; then
+				echo
+
+				firstauthorforename=$(echo "${author[0]}")
+				firstauthorsurname=$(echo "${author[1]}")
+				firstauthorcomplete=$(echo "${firstauthorsurname}, ${firstauthorforename:0:1}.")
+				echo "$firstauthorcomplete" # This command is here for now to test
+
+				secondauthorforename=$(echo "${author[2]}")
+				secondauthorsurname=$(echo "${author[3]}")
+				secondauthorcomplete=$(echo "${secondauthorsurname}, ${secondauthorforename:0:1}.")
+				echo "$secondauthorcomplete" # This command is here for now to test
+
+				authorcomplete=$(echo "$firstauthorcomplete and $secondauthorcomplete")
+			else
+				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
+				echo
+			fi
+		fi
+
+		if [[ "$noofauthor" -ge "3" ]]; then
+			read -p "List all $noofauthor author names, in any of the supported formats: " author
+			author=$(echo "$author" | sed 's/,//g;s/ & / /g;s/ and / /g') # Can only use one character as delimiter; comma is desired
+			author=( $author )
+
+			if [[ "${#author[@]}" -eq "$((noofauthor*2))" ]]; then
+				echo
+
+				firstauthorforename=$(echo "${author[0]}")
+				firstauthorsurname=$(echo "${author[1]}")
+				firstauthorcomplete=$(echo "${firstauthorsurname}, ${firstauthorforename:0:1}.")
+				echo "$firstauthorcomplete" # This command is here for now to test
+
+				secondauthorforename=$(echo "${author[2]}")
+				secondauthorsurname=$(echo "${author[3]}")
+				secondauthorcomplete=$(echo "${secondauthorsurname}, ${secondauthorforename:0:1}.")
+				echo "$secondauthorcomplete" # This command is here for now to test
+
+				thirdauthorforename=$(echo "${author[4]}")
+				thirdauthorsurname=$(echo "${author[5]}")
+				thirdauthorcomplete=$(echo "${thirdauthorsurname}, ${thirdauthorforename:0:1}.")
+				echo "$thirdauthorcomplete" # This command is here for now to test
+
+				fourthauthorforename=$(echo "${author[6]}")
+				fourthauthorsurname=$(echo "${author[7]}")
+				fourthauthorcomplete=$(echo "${fourthauthorsurname}, ${fourthauthorforename:0:1}.")
+				echo "$fourthauthorcomplete" # This command is here for now to test
+
+				fifthauthorforename=$(echo "${author[8]}")
+				fifthauthorsurname=$(echo "${author[9]}")
+				fifthauthorcomplete=$(echo "${fifthauthorsurname}, ${fifthauthorforename:0:1}.")
+				echo "$fifthauthorcomplete" # This command is here for now to test
+
+				if [[ "$noofauthor" -eq "3" ]] && [[ "${#author[@]}" -eq "6" ]]; then
+					authorcomplete=$(echo "$firstauthorcomplete, $secondauthorcomplete, $thirdauthorcomplete")
+				fi
+
+				if [[ "$noofauthor" -eq "4" ]] && [[ "${#author[@]}" -eq "8" ]]; then
+					authorcomplete=$(echo "$firstauthorcomplete, $secondauthorcomplete, $thirdauthorcomplete, $fourthauthorcomplete")
+				fi
+
+				if [[ "$noofauthor" -eq "5" ]] && [[ "${#author[@]}" -eq "10" ]]; then
+					authorcomplete=$(echo "$firstauthorcomplete, $secondauthorcomplete, $thirdauthorcomplete, $fourthauthorcomplete, $fifthauthorcomplete")
+				fi
+			else
+				echo
+				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
+			fi
 		fi
 	done
 
-	echo
-	echo -e ""$bold""$cyan"Forename may be a single letter"$reset"" 
-
-	if [[ "$noofauthor" -eq "1" ]]; then
-		read -p "What is the authors fullname? (e.g. Forename Surname): " author
-
-		forename=$(echo "$author" | cut -d ' ' -f 1)
-		surname=$(echo "$author" | cut -d ' ' -f 2)
-
-		authorcomplete=$(echo "${surname}, ${forename:0:1}.")
-		echo
-		echo "$authorcomplete" # This command is here for now to test
-	fi
-
-	if [[ "$noofauthor" -eq "2" ]]; then
-		read -p "Provide both author names, using a comma to separate (e.g. Forename Surname, Forename Surname): " author
-		author=$(echo "$author" | sed 's/, /,/g') # Can only use one character as delimiter; comma is desired
-		echo
-
-		firstauthorfullname=$(echo "$author" | cut -d ',' -f 1)
-		firstauthorforename=$(echo "$firstauthorfullname" | cut -d ' ' -f 1)
-		firstauthorsurname=$(echo "$firstauthorfullname" | cut -d ' ' -f 2)
-		firstauthorcomplete=$(echo "${firstauthorsurname}, ${firstauthorforename:0:1}.")
-		echo -e "\n$firstauthorcomplete" # This command is here for now to test
-
-		secondauthorfullname=$(echo "$author" | cut -d ',' -f 2)
-		secondauthorforename=$(echo "$secondauthorfullname" | cut -d ' ' -f 1)
-		secondauthorsurname=$(echo "$secondauthorfullname" | cut -d ' ' -f 2)
-		secondauthorcomplete=$(echo "${secondauthorsurname}, ${secondauthorforename:0:1}.")
-		echo "$secondauthorcomplete" # This command is here for now to test
-
-		authorcomplete=$(echo "$firstauthorcomplete and $secondauthorcomplete")
-	fi
-
-	if [[ "$noofauthor" -ge "3" ]]; then
-		read -p "List all $noofauthor author names, using a comma to separate (e.g. Forename Surname, Forename Surname, Forname Surname ...): " author
-		author=$(echo "$author" | sed 's/, /,/g') # Can only use one character as delimiter; comma is desired
-
-		firstauthorfullname=$(echo "$author" | cut -d ',' -f 1)
-		firstauthorforename=$(echo "$firstauthorfullname" | cut -d ' ' -f 1)
-		firstauthorsurname=$(echo "$firstauthorfullname" | cut -d ' ' -f 2)
-		firstauthorcomplete=$(echo "${firstauthorsurname}, ${firstauthorforename:0:1}.")
-		echo -e "\n$firstauthorcomplete" # This command is here for now to test
-
-		secondauthorfullname=$(echo "$author" | cut -d ',' -f 2)
-		secondauthorforename=$(echo "$secondauthorfullname" | cut -d ' ' -f 1)
-		secondauthorsurname=$(echo "$secondauthorfullname" | cut -d ' ' -f 2)
-		secondauthorcomplete=$(echo "${secondauthorsurname}, ${secondauthorforename:0:1}.")
-		echo "$secondauthorcomplete" # This command is here for now to test
-
-		thirdauthorfullname=$(echo "$author" | cut -d ',' -f 3)
-		thirdauthorforename=$(echo "$thirdauthorfullname" | cut -d ' ' -f 1)
-		thirdauthorsurname=$(echo "$thirdauthorfullname" | cut -d ' ' -f 2)
-		thirdauthorcomplete=$(echo "${thirdauthorsurname}, ${thirdauthorforename:0:1}.")
-		echo "$thirdauthorcomplete" # This command is here for now to test
-
-		if [[ "$noofauthor" -ge "4" ]]; then
-			fourthauthorfullname=$(echo "$author" | cut -d ',' -f 4)
-			fourthauthorforename=$(echo "$fourthauthorfullname" | cut -d ' ' -f 1)
-			fourthauthorsurname=$(echo "$fourthauthorfullname" | cut -d ' ' -f 2)
-			fourthauthorcomplete=$(echo "${fourthauthorsurname}, ${fourthauthorforename:0:1}.")
-			echo "$fourthauthorcomplete" # This command is here for now to test
-		fi
-
-		if [[ "$noofauthor" -ge "5" ]]; then
-			fifthauthorfullname=$(echo "$author" | cut -d ',' -f 5)
-			fifthauthorforename=$(echo "$fifthauthorfullname" | cut -d ' ' -f 1)
-			fifthauthorsurname=$(echo "$fifthauthorfullname" | cut -d ' ' -f 2)
-			fifthauthorcomplete=$(echo "${fifthauthorsurname}, ${fifthauthorforename:0:1}.")
-			echo "$fifthauthorcomplete" # This command is here for now to test
-		fi
-
-		if [[ "$noofauthor" -eq "3" ]]; then
-			authorcomplete=$(echo "$firstauthorcomplete, $secondauthorcomplete, $thirdauthorcomplete")
-		fi
-
-		if [[ "$noofauthor" -eq "4" ]]; then
-			authorcomplete=$(echo "$firstauthorcomplete, $secondauthorcomplete, $thirdauthorcomplete, $fourthauthorcomplete")
-		fi
-
-		if [[ "$noofauthor" -eq "5" ]]; then
-			authorcomplete=$(echo "$firstauthorcomplete, $secondauthorcomplete, $thirdauthorcomplete, $fourthauthorcomplete, $fifthauthorcomplete")
-		fi
-	fi
-
+	echo -e ""$yellow""$authorcomplete""$reset""
 }
 
 date=$(echo $(date '+%d %B %Y'))
 dateaccessed=$(echo "[Accessed on $date]")
 
-generateanother () {
-	unset generateanother
+generateanotherfunc () {
+	unsetvariablesfunc
 	echo
 	
 	while [[ ! $generateanother =~ ^(Y|y|N|n)$ ]]
 	do
 		read -p "Would you like to generate another reference? (y/n) " -n 2 -r generateanother
-	
+
 		if [[ $generateanother =~ ^[Nn]$ ]]; then
 			echo
-			echo -e ""$green"Thank you for using YRG. Good luck with your assignment! ;]"$reset""
+			echo -e "Thank you for using "$purple"YRG"$reset". "$green"Good luck with your assignment! "$yellow";]"$reset""
 			return 1
 		fi
 
 		if [[ $generateanother =~ ^[Yy]$ ]]; then
-			echo "Alrighty, ready for the next reference"
-			options
+			echo -e ""$green"Alrighty, ready for the next reference!"$reset""
+			optionsfunc
 		fi
 
 		if [[ ! $generateanother =~ ^[Yy|Nn]$ ]]; then
@@ -140,15 +158,15 @@ generateanother () {
 	done
 }
 
-namenewsmag () {
+namenewsmagfunc () {
 	echo
 	read -p "What is the name of the Newspaper/Magazine? (e.g. The Guardian  or  Financial Times): " namenewsmag
-	namenewsmag=$(echo -e ""$italic"$namenewsmag"$reset".")
+	namenewsmag=$(echo -e ""$italic""$namenewsmag""$reset".")
 	echo
-	echo "$namenewsmag" # This command is here for now to test
+	echo -e ""$yellow""$namenewsmag""$reset"" # This command is here for now to test
 }
 
-publishdate () {
+publishdatefunc () {
 	echo
 
 	read -p "What is the published date of the source? (e.g. 12th March 2017): " pub
@@ -162,22 +180,59 @@ publishdate () {
 	pubdate=$(echo "$pubdate".) # The Publication date will only be used in the references section, which includes a '.' after it
 
 	echo
-	echo "$itpubyear $pubdate $refpubyear " # This command is here for now to test
+	echo -e ""$yellow""$itpubyear $pubdate $refpubyear" "$reset"" # This command is here for now to test
 }
 
-quotedtitle () {
+quotedtitlefunc () {
 	echo
 	read -p "What is the title of the source? " quotedtitle
 	quotedtitle=$(echo "'$quotedtitle.'")
-	echo "$quotedtitle" # This command is here for now to test
+	echo
+	echo -e "$yellow""$quotedtitle""$reset" # This command is here for now to test
 }
 
-url () {
+urlfunc () {
 	echo
 	read -p "What is the URL of the source? " url
+	url=$(echo -e "$dblue""$url""$reset")
+	echo
+	echo "$url"
 }
 
-options () {
+unsetvariablesfunc () {
+	unset authorcomplete
+	unset noofauthor
+	unset author
+	
+	unset firstauthorcomplete
+	unset firstauthorfullname
+	unset firstauthorforename
+	unset firstauthorsurname 
+	
+	unset secondauthorcomplete
+	unset secondauthorfullname
+	unset secondauthorforename
+	unset secondauthorsurname
+
+	unset thirdauthorcomplete
+	unset thirdauthorfullname
+	unset thirdauthorforename
+	unset thirdauthorsurname
+
+	unset fourthauthorcomplete
+	unset fourthauthorfullname
+	unset fourthauthorforename
+	unset fourthauthorsurname
+
+	unset fifthauthorcomplete
+	unset fifthauthorfullname
+	unset fifthauthorforename
+	unset fifthauthorsurname
+
+	unset generateanother
+}
+
+optionsfunc () {
 	echo
 	echo -e "What format is the source you are referencing?"
 	echo
@@ -189,42 +244,42 @@ options () {
 
 			"(Online) Newspaper")
 				echo
-				echo "You chose '$opt'"
+				echo -e "You chose '"$purple"$opt"$reset"'"
 				echo
 				echo ""$opt" reference layout:"
-				echo -e "Author surname, Initial. (Year of publication) ‘Title of article.’ "$italic"Name of newspaper"$reset". [Online] Date of publication. [Date accessed] URL"
+				echo -e "Author surname, Initial. (Year of publication) ‘Title of article.’ "$italic"Name of newspaper"$reset". [Online] Date of publication. [Date accessed] "$dblue"URL"$reset""
 
-				author
-				namenewsmag
-				publishdate
-				quotedtitle
-				url
+				authorfunc
+				namenewsmagfunc
+				publishdatefunc
+				quotedtitlefunc
+				urlfunc
 
 				echo
 				echo -e ""$green"Reference Generated:"$reset""
 				echo -e "$authorcomplete $refpubyear $quotedtitle $namenewsmag [Online] $pubdate $dateaccessed $url"
-				generateanother
+				generateanotherfunc
 				break
 				;;
 
 			"Website (General)")
-				echo "You chose '$opt'"
+				echo -e "You chose '"$purple"$opt"$reset"'"
 				echo
 				echo ""$opt" reference layout:"
 
-				author
-				publishdate
-				generateanother
+				authorfunc
+				publishdatefunc
+				generateanotherfunc
 				break
 				;;
 			"Journal")
-				echo "You chose '$opt'"
+				echo -e "You chose '"$purple"$opt"$reset"'"
 				echo
 				echo ""$opt" reference layout:"
 
-				author
-				publishdate
-				generateanother
+				authorfunc
+				publishdatefunc
+				generateanotherfunc
 				break
 				;;
 
@@ -233,7 +288,7 @@ options () {
 				;;
 			*)
 				echo
-				echo ""$red"You did not choose one of the options: '$REPLY'. Try again:"$reset""
+				echo -e ""$red"You did not choose one of the options: '$REPLY'. Try again:"$reset""
 				echo
 				;;
 
@@ -245,8 +300,12 @@ clear # Clear screen, immerse the generator
 
 echo "   -------------------------------------------   "
 echo " / /‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ \ "
-echo -e " | | "$cyan"Welcome "$bold""$red"to"$reset" "$green"Your"$yellow"Reference"$grey"Generator "$purple"(YRG)"$reset" | | "
+echo -e " | | "$cyan"Welcome "$bold""$red"to"$reset" "$green"Your"$yellow"Reference"$reset"Generator "$purple"(YRG)"$reset" | | "
 echo " \ \_________________________________________/ / "
 echo "   -------------------------------------------   "
+echo
+echo -e ""$bold"The "$yellow"Yellow outputs"$reset" "$bold"show what the script is populating towards the final reference."$reset""
+echo -e ""$bold"If you inputted an incorrect response, please press '"$cyan"Control + c"$reset"' "$bold"to exit and then re-bash this script"$reset""
 
-options
+unsetvariablesfunc
+optionsfunc
