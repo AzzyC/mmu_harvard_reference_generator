@@ -13,22 +13,40 @@ reset="\e[0m" # Reset subsequent string back to normal font
 authorfunc () {
 	echo
 
-	while [[ ! $noofauthor =~ ^(1|2|3|4|5)$ ]]
+	while [[ ! $noofauthor =~ ^(0|1|2|3|4|5)$ ]]
 	do
-		read -p "How many authors are there? - Maximum of 5: " -n 2 -r noofauthor
+		read -p "How many authors are there? - Maximum of 5 (If no author, input 0): " -n 2 -r noofauthor
 
-		if [[ ! $noofauthor =~ ^(1|2|3|4|5)$ ]]; then
+		if [[ ! $noofauthor =~ ^(0|1|2|3|4|5)$ ]]; then
 			echo
 			echo -e ""$red"You did not input a number, a number within the range or pressing backspace instead: '$noofauthor'"$reset""
 			echo
 		fi
 	done
+
+	if [[ "$noofauthor" -eq "0" ]]; then
+		if [[ "$opt" == "Online Newspaper article" ]]; then
+			echo
+			echo -e ""$yellow"Title of the "$opt" will be used instead"$reset"."
+		fi
+	fi
  
 	while [[ "${#author[@]}" -ne "$((noofauthor*2))" ]]; do
+
+		if [[ "$noofauthor" -ge "1" ]]; then
+			echo
+			echo -e ""$purple"Authors names should be inputted in "$reset""$bold"Forename Surname"$reset" "$purple"order - Forname may be a single letter"$reset""
+			if [[ "$noofauthor" -ge "2" ]]; then
+				echo
+				echo "Supported Formats:"
+				echo -e ""$yellow"'Author1, Author2, ..'"$reset", "$green"'Author1 & Author2 & ..'"$reset", "$red"'Author1 and Author2 and ..'"$reset", "$purple"'Author1 Author2'"$reset", "$cyan"'Author1 Author2'"$reset" or "$bold"any mix of the 4"$reset", e.g. "$lblue"'Author1, Author2 and ..'"$reset""
+				echo
+			fi
+		fi
 		
 		if [[ "$noofauthor" -eq "1" ]]; then
 			echo
-			read -p "What is the authors fullname? (e.g. Forename Surname): " author
+			read -p "What is the authors fullname? " author
 			author=( $author )
 
 			if [[ "${#author[@]}" -eq "2" ]]; then
@@ -39,18 +57,13 @@ authorfunc () {
 
 				authorcomplete=$(echo "${surname}, ${forename:0:1}.")
 			else
+				echo
 				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
 			fi
 		fi
 
-		if [[ "$noofauthor" -ge "2" ]]; then
-			echo
-			echo -e ""$purple"Authors names should be inputted in "$reset""$bold"Forename Surname"$reset" "$purple"order - Forname may be a single letter"$reset""
-			echo -e ""$cyan"Supported formats: "$yellow"'Author1, Author2, ..'"$reset" or "$green"'Author1 & Author2 & ..'"$reset" or "$red"'Author1 and Author2 and ..'"$reset" or "$purple"'Author1 Author2'"$reset" or "$dblue"'Author1 Author2'"$reset" or a "$bold"mix of the 4"$reset", e.g. "$lblue"'Author1, Author2 and ..'"$reset""
-		fi				
-
 		if [[ "$noofauthor" -eq "2" ]]; then
-			read -p "Provide both authors names, in any of the supported formats: " author
+			read -p "Provide both authors names: " author
 			author=$(echo "$author" | sed 's/,//g;s/ & / /g;s/ and / /g') # Can only use one character as delimiter; comma is desired
 			author=( $author )
 
@@ -69,13 +82,13 @@ authorfunc () {
 
 				authorcomplete=$(echo "$firstauthorcomplete and $secondauthorcomplete")
 			else
-				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
 				echo
+				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
 			fi
 		fi
 
 		if [[ "$noofauthor" -ge "3" ]]; then
-			read -p "List all $noofauthor author names, in any of the supported formats: " author
+			read -p "Provide all $noofauthor authors names: " author
 			author=$(echo "$author" | sed 's/,//g;s/ & / /g;s/ and / /g') # Can only use one character as delimiter; comma is desired
 			author=( $author )
 
@@ -123,9 +136,11 @@ authorfunc () {
 				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
 			fi
 		fi
+		
+		echo -e ""$yellow""$authorcomplete""$reset""
+	
 	done
 
-	echo -e ""$yellow""$authorcomplete""$reset""
 }
 
 date=$(echo $(date '+%d %B %Y'))
@@ -237,12 +252,12 @@ optionsfunc () {
 	echo -e "What format is the source you are referencing?"
 	echo
 	PS3='Please enter your number choice (1/2/3/4): '
-	options=("(Online) Newspaper" "Website (General)" "Journal" "Quit") # Options to be slowly expanded
+	options=("Online Newspaper article" "Website (General)" "Journal" "Quit") # Options to be slowly expanded
 	select opt in "${options[@]}"
 	do
 		case $opt in
 
-			"(Online) Newspaper")
+			"Online Newspaper article")
 				echo
 				echo -e "You chose '"$purple"$opt"$reset"'"
 				echo
@@ -257,12 +272,16 @@ optionsfunc () {
 
 				echo
 				echo -e ""$green"Reference Generated:"$reset""
-				echo -e "$authorcomplete $refpubyear $quotedtitle $namenewsmag [Online] $pubdate $dateaccessed $url"
+				if [[ "$noofauthor" -ge "1" ]]; then
+					echo -e "$authorcomplete $refpubyear $quotedtitle $namenewsmag [Online] $pubdate $dateaccessed $url"
+				else
+					echo -e "$quotedtitle $refpubyear $namenewsmag [Online] $pubdate $dateaccessed $url"
+				fi
 				generateanotherfunc
 				break
 				;;
 
-			"Website (General)")
+			"Website")
 				echo -e "You chose '"$purple"$opt"$reset"'"
 				echo
 				echo ""$opt" reference layout:"
