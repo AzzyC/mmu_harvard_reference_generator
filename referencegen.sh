@@ -1,3 +1,4 @@
+#!/bin/bash
 # ANSI Escape Codes
 bold="\e[1m" 
 italic="\e[3m"
@@ -13,13 +14,13 @@ reset="\e[0m" # Reset subsequent string back to normal font
 authorfunc () {
 	echo
 
-	while [[ ! $noofauthor =~ ^(0|1|2|3|4|5)$ ]]
+	while [[ ! "$noofauthor" =~ ^(0|1|2|3|4|5)$ ]]
 	do
 		read -p "How many authors are there? - Maximum of 5 (If no author, input 0): " -n 2 -r noofauthor
 
-		if [[ ! $noofauthor =~ ^(0|1|2|3|4|5)$ ]]; then
+		if [[ ! "$noofauthor" =~ ^(0|1|2|3|4|5)$ ]]; then
 			echo
-			echo -e ""$red"You did not input a number, a number within the range or pressing backspace instead: '$noofauthor'"$reset""
+			echo -e "$red You did not input a number, a number within the range or pressing backspace instead: '$noofauthor'$reset"
 			echo
 		fi
 	done
@@ -27,7 +28,7 @@ authorfunc () {
 	if [[ "$noofauthor" -eq "0" ]]; then
 		if [[ "$opt" == "Online Newspaper article" ]]; then
 			echo
-			echo -e ""$yellow"Title of the "$opt" will be used instead"$reset"."
+			echo -e "$yellow Title of the $opt will be used instead$reset."
 		fi
 	fi
  
@@ -35,11 +36,11 @@ authorfunc () {
 
 		if [[ "$noofauthor" -ge "1" ]]; then
 			echo
-			echo -e ""$purple"Authors names should be inputted in "$reset""$bold"Forename Surname"$reset" "$purple"order - Forname may be a single letter"$reset""
+			echo -e "$purple Authors names should be inputted in$reset$bold Forename Surname$reset$purple order - Forname may be a single letter$reset"
 			if [[ "$noofauthor" -ge "2" ]]; then
 				echo
 				echo "Supported Formats:"
-				echo -e ""$yellow"'Author1, Author2, ..'"$reset", "$green"'Author1 & Author2 & ..'"$reset", "$red"'Author1 and Author2 and ..'"$reset", "$purple"'Author1 Author2'"$reset", "$cyan"'Author1 Author2'"$reset" or "$bold"any mix of the 4"$reset", e.g. "$lblue"'Author1, Author2 and ..'"$reset""
+				echo -e "$yellow'Author1, Author2, ..'$reset, $green'Author1 & Author2 & ..'$reset, $red'Author1 and Author2 and ..'$reset or$bold any mix of the 3$reset, e.g.$lblue'Author1, Author2 and ..'$reset"
 				echo
 			fi
 		fi
@@ -58,7 +59,7 @@ authorfunc () {
 				authorcomplete=$(echo "${surname}, ${forename:0:1}.")
 			else
 				echo
-				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
+				echo -e "$red You entered '${#author[@]}' word(s). There should be a total of '$((noofauthor*2))' forenames/surnames for '$noofauthor' author(s). Try again:$reset"
 			fi
 		fi
 
@@ -83,7 +84,7 @@ authorfunc () {
 				authorcomplete=$(echo "$firstauthorcomplete and $secondauthorcomplete")
 			else
 				echo
-				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
+				echo -e "$red You entered '${#author[@]}' word(s). There should be a total of '$((noofauthor*2))' forenames/surnames for '$noofauthor' author(s). Try again:$reset"
 			fi
 		fi
 
@@ -133,11 +134,11 @@ authorfunc () {
 				fi
 			else
 				echo
-				echo -e ""$red"You entered '"${#author[@]}"' word(s). There should be a total of '"$((noofauthor*2))"' forenames/surnames for '"$noofauthor"' author(s). Try again:"$reset""
+				echo -e "$red You entered '${#author[@]}' word(s). There should be a total of '$((noofauthor*2))' forenames/surnames for '$noofauthor' author(s). Try again:$reset"
 			fi
 		fi
 		
-		echo -e ""$yellow""$authorcomplete""$reset""
+		echo -e "$yellow$authorcomplete$reset"
 	
 	done
 
@@ -150,24 +151,24 @@ generateanotherfunc () {
 	unsetvariablesfunc
 	echo
 	
-	while [[ ! $generateanother =~ ^(Y|y|N|n)$ ]]
+	while [[ ! "$generateanother" =~ ^(Y|y|N|n)$ ]]
 	do
 		read -p "Would you like to generate another reference? (y/n) " -n 2 -r generateanother
 
-		if [[ $generateanother =~ ^[Nn]$ ]]; then
+		if [[ "$generateanother" =~ ^[Nn]$ ]]; then
 			echo
-			echo -e "Thank you for using "$purple"YRG"$reset". "$green"Good luck with your assignment! "$yellow";]"$reset""
+			echo -e "Thank you for using $purple YRG$reset . $green Good luck with your assignment! $yellow ;]$reset"
 			return 1
 		fi
 
-		if [[ $generateanother =~ ^[Yy]$ ]]; then
-			echo -e ""$green"Alrighty, ready for the next reference!"$reset""
+		if [[ "$generateanother" =~ ^[Yy]$ ]]; then
+			echo -e "$green Alrighty, ready for the next reference!$reset"
 			optionsfunc
 		fi
 
-		if [[ ! $generateanother =~ ^[Yy|Nn]$ ]]; then
+		if [[ ! "$generateanother" =~ ^[Yy|Nn]$ ]]; then
 			echo
-			echo -e ""$red"You did not input 'y'/'Y' or 'n'/'N': "$generateanother"."$reset""
+			echo -e "$red You did not input 'y'/'Y' or 'n'/'N': $generateanother.$reset"
 			echo
 		fi
 	done
@@ -176,9 +177,9 @@ generateanotherfunc () {
 namenewsmagfunc () {
 	echo
 	read -p "What is the name of the Newspaper/Magazine? (e.g. The Guardian  or  Financial Times): " namenewsmag
-	namenewsmag=$(echo -e ""$italic""$namenewsmag""$reset".")
+	namenewsmag=$(echo -e "$italic$namenewsmag$reset.")
 	echo
-	echo -e ""$yellow""$namenewsmag""$reset"" # This command is here for now to test
+	echo -e "$yellow$namenewsmag$reset" # This command is here for now to test
 }
 
 publishdatefunc () {
@@ -195,7 +196,7 @@ publishdatefunc () {
 	pubdate=$(echo "$pubdate".) # The Publication date will only be used in the references section, which includes a '.' after it
 
 	echo
-	echo -e ""$yellow""$itpubyear $pubdate $refpubyear" "$reset"" # This command is here for now to test
+	echo -e "$yellow$itpubyear $pubdate $refpubyear$reset" # This command is here for now to test
 }
 
 quotedtitlefunc () {
@@ -203,13 +204,13 @@ quotedtitlefunc () {
 	read -p "What is the title of the source? " quotedtitle
 	quotedtitle=$(echo "'$quotedtitle.'")
 	echo
-	echo -e "$yellow""$quotedtitle""$reset" # This command is here for now to test
+	echo -e "$yellow$quotedtitle$reset"  # This command is here for now to test
 }
 
 urlfunc () {
 	echo
 	read -p "What is the URL of the source? " url
-	url=$(echo -e "$dblue""$url""$reset")
+	url=$(echo -e "$dblue$url$reset")
 	echo
 	echo "$url"
 }
@@ -259,10 +260,10 @@ optionsfunc () {
 
 			"Online Newspaper article")
 				echo
-				echo -e "You chose '"$purple"$opt"$reset"'"
+				echo -e "You chose '$purple $opt$reset '"
 				echo
-				echo ""$opt" reference layout:"
-				echo -e "Author surname, Initial. (Year of publication) ‘Title of article.’ "$italic"Name of newspaper"$reset". [Online] Date of publication. [Date accessed] "$dblue"URL"$reset""
+				echo "$opt reference layout:"
+				echo -e "Author surname, Initial. (Year of publication) ‘Title of article.’ $italic Name of newspaper$reset. [Online] Date of publication. [Date accessed]$dblue URL$reset"
 
 				authorfunc
 				namenewsmagfunc
@@ -271,7 +272,7 @@ optionsfunc () {
 				urlfunc
 
 				echo
-				echo -e ""$green"Reference Generated:"$reset""
+				echo -e "$green Reference Generated:$reset "
 				if [[ "$noofauthor" -ge "1" ]]; then
 					echo -e "$authorcomplete $refpubyear $quotedtitle $namenewsmag [Online] $pubdate $dateaccessed $url"
 				else
@@ -282,9 +283,9 @@ optionsfunc () {
 				;;
 
 			"Website")
-				echo -e "You chose '"$purple"$opt"$reset"'"
+				echo -e "You chose '$purple $opt$reset'"
 				echo
-				echo ""$opt" reference layout:"
+				echo "$opt reference layout:"
 
 				authorfunc
 				publishdatefunc
@@ -292,9 +293,9 @@ optionsfunc () {
 				break
 				;;
 			"Journal")
-				echo -e "You chose '"$purple"$opt"$reset"'"
+				echo -e "You chose '$purple $opt$reset'"
 				echo
-				echo ""$opt" reference layout:"
+				echo "$opt reference layout:"
 
 				authorfunc
 				publishdatefunc
@@ -307,7 +308,7 @@ optionsfunc () {
 				;;
 			*)
 				echo
-				echo -e ""$red"You did not choose one of the options: '$REPLY'. Try again:"$reset""
+				echo -e "$red You did not choose one of the options: '$REPLY'. Try again:$reset "
 				echo
 				;;
 
@@ -319,12 +320,12 @@ clear # Clear screen, immerse the generator
 
 echo "   -------------------------------------------   "
 echo " / /‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ \ "
-echo -e " | | "$cyan"Welcome "$bold""$red"to"$reset" "$green"Your"$yellow"Reference"$reset"Generator "$purple"(YRG)"$reset" | | "
+echo -e " | |$cyan Welcome$bold$red to$reset$green Your"$yellow"Reference"$reset"Generator$purple (YRG)$reset | | "
 echo " \ \_________________________________________/ / "
 echo "   -------------------------------------------   "
 echo
-echo -e ""$bold"The "$yellow"Yellow outputs"$reset" "$bold"show what the script is populating towards the final reference."$reset""
-echo -e ""$bold"If you inputted an incorrect response, please press '"$cyan"Control + c"$reset"' "$bold"to exit and then re-bash this script"$reset""
+echo -e "$bold• The$yellow Yellow outputs$reset$bold show what the script is populating towards the final reference.$reset"
+echo -e "$bold• If you inputted an incorrect response, please press '"$cyan"Control + c$reset'$bold to exit and then re-bash this script$reset"
 
 unsetvariablesfunc
 optionsfunc
